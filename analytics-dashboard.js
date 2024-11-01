@@ -1,5 +1,5 @@
 // analytics-dashboard.js
-// Version 4
+// Version 5
 
 import { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
@@ -10,35 +10,34 @@ const AnalyticsDashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch('/api/analytics');
-      const jsonData = await response.json();
-      setData(jsonData);
-      setLoading(false);
+      try {
+        const response = await fetch('/api/analytics');
+        const jsonData = await response.json();
+        setData(jsonData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchData();
   }, []);
 
-  const renderChart = () => {
-    if (loading) {
-      return <div>Loading...</div>;
-    }
-
-    return (
-      <LineChart width={500} height={300} data={data}>
-        <Line type="monotone" dataKey="users" stroke="#8884d8" />
-        <Line type="monotone" dataKey="sessions" stroke="#82ca9d" />
-        <XAxis dataKey="date" />
-        <YAxis />
-        <CartesianGrid stroke="#ccc" />
-        <Tooltip />
-      </LineChart>
-    );
-  };
-
   return (
     <div>
       <h1>Real-time Analytics Dashboard</h1>
-      {renderChart()}
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <LineChart width={500} height={300} data={data}>
+          <Line type="monotone" dataKey="users" stroke="#8884d8" />
+          <Line type="monotone" dataKey="sessions" stroke="#82ca9d" />
+          <XAxis dataKey="date" />
+          <YAxis />
+          <CartesianGrid stroke="#ccc" />
+          <Tooltip />
+        </LineChart>
+      )}
     </div>
   );
 };
