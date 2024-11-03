@@ -1,3 +1,5 @@
+// complicated-feature.ts
+
 interface State {
   value: number;
   history: number[];
@@ -16,6 +18,7 @@ interface Store<S, A> {
   getState: () => S;
   dispatch: (action: A) => void;
   subscribe: (listener: () => void) => () => void;
+  applyMiddleware: (...middleware: Middleware<S, A>[]) => void;
 }
 
 class Store<S, A> {
